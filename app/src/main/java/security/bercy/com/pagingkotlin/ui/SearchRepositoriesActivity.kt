@@ -1,7 +1,8 @@
-package security.bercy.com.pagingkotlin
+package security.bercy.com.pagingkotlin.ui
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import security.bercy.com.pagingkotlin.R
 
 class SearchRepositoriesActivity : AppCompatActivity() {
 
