@@ -8,8 +8,11 @@ import java.util.concurrent.Executor
 class GithubLocalCache(private val repoDao:RepoDao,private val ioExecutor: Executor) {
 
     fun insert(repos:List<Repo>,insertFinished: ()->Unit) {
-        repoDao.insert(repos)
-        insertFinished()
+        ioExecutor.execute {
+            repoDao.insert(repos)
+            insertFinished()
+        }
+
     }
 
     fun reposByName(name:String) : LiveData<List<Repo>> {

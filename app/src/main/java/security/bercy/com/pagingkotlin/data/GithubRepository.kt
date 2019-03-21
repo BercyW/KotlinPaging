@@ -2,7 +2,7 @@ package security.bercy.com.pagingkotlin.data
 
 import android.arch.lifecycle.MutableLiveData
 import security.bercy.com.pagingkotlin.api.GithubService
-import security.bercy.com.pagingkotlin.api.searchRepo
+import security.bercy.com.pagingkotlin.api.searchRepos
 import security.bercy.com.pagingkotlin.db.GithubLocalCache
 import security.bercy.com.pagingkotlin.model.RepoSearchResult
 
@@ -12,7 +12,7 @@ class GithubRepository(private val service : GithubService, private val cache: G
     private var lastRequestedPage = 1
 
     //LiveData of network errors
-    private val networkError = MutableLiveData<String>()
+    private val networkErrors = MutableLiveData<String>()
 
     //avoid triggering multiple request in the same time
     private var isRequestInprogress = false
@@ -26,7 +26,7 @@ class GithubRepository(private val service : GithubService, private val cache: G
         //get data from local cache
         val data = cache.reposByName(query)
 
-        return RepoSearchResult(data,networkError)
+        return RepoSearchResult(data,networkErrors)
     }
 
     fun requestMore(query:String) {
@@ -38,14 +38,14 @@ class GithubRepository(private val service : GithubService, private val cache: G
 
         isRequestInprogress = true
 
-        searchRepo(service,query,lastRequestedPage,NETWORK_PAGE_SIZE,{repos ->
+        searchRepos(service,query,lastRequestedPage,NETWORK_PAGE_SIZE,{repos ->
             cache.insert(repos) {
                 lastRequestedPage++
                 isRequestInprogress = false
             }
 
         },{error ->
-            networkError.postValue(error)
+            networkErrors.postValue(error)
             isRequestInprogress = false
         })
 

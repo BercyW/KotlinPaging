@@ -18,7 +18,7 @@ class SearchRepositoriesViewModel(private val repository : GithubRepository) : V
     }
 
     val repos:LiveData<List<Repo>> = Transformations.switchMap(repoResult) {it->it.data}
-    val networkErrors:LiveData<String> = Transformations.switchMap(repoResult) {it->it.networkError}
+    val networkErrors:LiveData<String> = Transformations.switchMap(repoResult) {it->it.networkErrors}
 
 
     fun searchRepo(queryString:String) {

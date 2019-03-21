@@ -18,11 +18,11 @@ import java.util.concurrent.Executors
 object Injection {
 
     /**
-     * provides the [ViewModelProvider.Factor] that is then used to get a reference to [ViewModel] objects.
-     *
+     * creates an instance of githublocalcache based on the database dao
      */
-    fun provideViewModelFactory(context:Context) : ViewModelProvider.Factory {
-        return ViewModelFactory(provideGithubRepository(context))
+    private fun provideCache(context: Context): GithubLocalCache {
+        val database = RepoDatabase.getInstance(context)
+        return GithubLocalCache(database.reposDao(),Executors.newSingleThreadExecutor())
     }
 
     /**
@@ -32,12 +32,16 @@ object Injection {
         return GithubRepository(GithubService.create(),provideCache(context))
     }
 
+
     /**
-     * creates an instance of githublocalcache based on the database dao
+     * provides the [ViewModelProvider.Factor] that is then used to get a reference to [ViewModel] objects.
+     *
      */
-    private fun provideCache(context: Context): GithubLocalCache {
-        val database = RepoDatabase.getInstance(context)
-        return GithubLocalCache(database.reposDao(),Executors.newSingleThreadExecutor())
+    fun provideViewModelFactory(context:Context) : ViewModelProvider.Factory {
+        return ViewModelFactory(provideGithubRepository(context))
     }
+
+
+
 
 }

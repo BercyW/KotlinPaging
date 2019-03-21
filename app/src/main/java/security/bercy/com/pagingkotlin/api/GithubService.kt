@@ -2,6 +2,7 @@ package security.bercy.com.pagingkotlin.api
 
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import okhttp3.logging.HttpLoggingInterceptor.Level
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -12,23 +13,25 @@ import retrofit2.http.Query
 import security.bercy.com.pagingkotlin.model.Repo
 
 
-private const val IN_QUALIFIER = "in.name,description"
+private const val IN_QUALIFIER = "in:name,description"
 
-fun searchRepo(service:GithubService,
+fun searchRepos(
+               service:GithubService,
                query:String,
                page:Int,
                itemsPerPage:Int,
                onSuccess:(repos:List<Repo>)->Unit,
                onError:(error:String)->Unit) {
 
-    val apiQuery = query+IN_QUALIFIER
+    val apiQuery = query + IN_QUALIFIER
+
     service.searchRepos(apiQuery,page,itemsPerPage).enqueue(
         object : Callback<RepoSearchResponse> {
             override fun onFailure(call: Call<RepoSearchResponse>, t: Throwable) {
                 onError(t.message?:"unknown error")
             }
 
-            override fun onResponse(call: Call<RepoSearchResponse>, response: Response<RepoSearchResponse>) {
+            override fun onResponse(call: Call<RepoSearchResponse>?, response: Response<RepoSearchResponse>) {
                 if(response.isSuccessful) {
                     val repos = response.body()?.items ?: emptyList()
                     onSuccess(repos)
@@ -40,13 +43,7 @@ fun searchRepo(service:GithubService,
 
         }
     )
-
-
-
 }
-
-
-
 
 interface GithubService {
     @GET("search/repositories?sort=stars")
@@ -58,7 +55,7 @@ interface GithubService {
 
         fun create() : GithubService {
             val logger = HttpLoggingInterceptor()
-            logger.level = HttpLoggingInterceptor.Level.BASIC
+            logger.level = Level.BASIC
 
             val client = OkHttpClient.Builder()
                 .addInterceptor(logger)

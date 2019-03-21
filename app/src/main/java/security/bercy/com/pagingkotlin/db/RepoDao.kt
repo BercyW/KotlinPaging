@@ -12,6 +12,11 @@ interface RepoDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(posts:List<Repo>)
 
-    @Query("SELECT * FROM repos WHERE (name LIKE : queryString) OR (description LIKE " + ":queryString) ORDER BY starts DESC, nameASC")
-    fun reposByName(queryString:String) : LiveData<List<Repo>>
+    @Query("SELECT * FROM repos WHERE (name LIKE :queryString) OR (description LIKE " + ":queryString) ORDER BY stars DESC, name ASC")
+    fun reposByName(queryString: String) : LiveData<List<Repo>>
 }
+//@Query("SELECT * FROM repos WHERE (name LIKE :queryString) OR (description LIKE " + ":queryString) ORDER BY stars DESC, name ASC")
+
+
+//not working
+//@Query("SELECT * FROM repos WHERE (name LIKE : queryString) OR (description LIKE " + ":queryString) ORDER BY stars DESC, name ASC")

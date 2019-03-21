@@ -1,5 +1,7 @@
 package security.bercy.com.pagingkotlin.ui
 
+import android.content.Intent
+import android.net.Uri
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -13,10 +15,22 @@ import security.bercy.com.pagingkotlin.model.Repo
 class RepoViewHolder( view: View) : RecyclerView.ViewHolder(view) {
     private val name : TextView = view.findViewById(R.id.repo_name)
     private val description : TextView = view.findViewById(R.id.repo_description)
-    private val starts : TextView = view.findViewById(R.id.repo_stars)
+    private val stars : TextView = view.findViewById(R.id.repo_stars)
     private val language: TextView = view.findViewById(R.id.repo_language)
     private val forks: TextView = view.findViewById(R.id.repo_forks)
     private var repo:Repo? = null
+
+
+    init {
+        view.setOnClickListener {
+            repo?.url?.let { url->
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                view.context.startActivity(intent)
+            }
+        }
+    }
+
+
 
     fun build(repo : Repo?) {
         if(repo == null) {
@@ -24,7 +38,7 @@ class RepoViewHolder( view: View) : RecyclerView.ViewHolder(view) {
             name.text = resources.getString(R.string.loading)
             description.visibility=View.GONE
             language.visibility=View.GONE
-            starts.text = resources.getString(R.string.unknown)
+            stars.text = resources.getString(R.string.unknown)
             forks.text = resources.getString(R.string.unknown)
         }else {
             showRepoData(repo)
@@ -42,7 +56,7 @@ class RepoViewHolder( view: View) : RecyclerView.ViewHolder(view) {
         }
         description.visibility = descriptionVisibility
 
-        starts.text = repo.stars.toString()
+        stars.text = repo.stars.toString()
         forks.text =repo.forks.toString()
 
         var languageVisibility = View.GONE

@@ -26,14 +26,12 @@ class ReposAdapter : ListAdapter<Repo, RecyclerView.ViewHolder>(REPO_COMPARATOR)
 
     companion object {
         private val REPO_COMPARATOR = object:DiffUtil.ItemCallback<Repo>() {
-            override fun areItemsTheSame(p0: Repo, p1: Repo): Boolean {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
+            override fun areItemsTheSame(p0: Repo, p1: Repo): Boolean =
+                p0.fullName == p1.fullName
 
-            override fun areContentsTheSame(p0: Repo, p1: Repo): Boolean {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
 
+            override fun areContentsTheSame(p0: Repo, p1: Repo): Boolean =
+                    p0 == p1
         }
     }
 }
